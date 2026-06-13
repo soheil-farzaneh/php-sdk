@@ -26,7 +26,8 @@ class Invoice {
             'name'          => $this->name,
             'national_code' => $this->national_code,
             'method'        => $this->method,
-            'sms'           => $this->sms
+            'sms'           => $this->sms,
+            'tracking_code' => $this->tracking_code
         ];
     }
 
