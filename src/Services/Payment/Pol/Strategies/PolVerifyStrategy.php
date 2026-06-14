@@ -1,42 +1,35 @@
-<?php 
+<?php
 
 namespace Aqayepardakht\PhpSdk\Services\Payment\Pol\Strategies;
 
-use Aqayepardakht\PhpSdk\Interfaces\PaymentStrategy;
-use Aqayepardakht\Http\Client;
-use Aqayepardakht\PhpSdk\Helper;
 use Aqayepardakht\PhpSdk\Invoice;
 
-class PolOtpStrategy implements PaymentStrategy {
-
-    protected $pin;
-
-    protected $invoice;
-
-    public function __construct(string $pin, Invoice $invoice) {
-        $this->pin     = $pin;
-        $this->invoice = $invoice;
+class PolVerifyStrategy extends AbstractPolStrategy
+{
+    public function __construct(
+        protected string $code,
+        string $pin,
+        Invoice $invoice,
+    ) {
+        parent::__construct($pin, $invoice);
     }
 
-    public function process() {
-        Helper::validateUrl($this->invoice->callback);
- 
-        $params        = $this->invoice->getItems();
-        $params["pin"] = $this->pin;
+    protected function endpointAction(): string
+    {
+        return 'verify';
+    }
 
-        $response = (new Client())->post(Helper::getBaseUrl('create'), $params);
+    protected function extraParams(): array
+    {
+        return [
+            'code' => $this->code,
+        ];
+    }
 
-        $response = $response->json();
-
-        if (!$response) {
-            throw new \Exception("Error: مشکلی در اتصال به آقای پرداخت وجود دارد لطفا دوباره تلاش کنید", 0);
-        }
-
-        if ($response->status == 'error') {
-            throw new \Exception("Error: ".$response->message, $response->code);
-        }
-
-        return $response;
-   
+    protected function onSuccess(object $response): array
+    {
+        return [
+            'tracking_code' => $response->tracking_code ?? $this->invoice->getTrackingCode(),
+        ];
     }
 }
