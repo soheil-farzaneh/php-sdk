@@ -29,11 +29,6 @@ class PolService {
             PolStrategyFactory::make('otp', $this->pin, $this->invoice)
         );
 
-        if ($response->status == 'success') {
-            $trackingCode = $response->tracking_code;
-            $this->invoice->setTrackingCode($trackingCode);
-        }
-
         return $response;
     }
 

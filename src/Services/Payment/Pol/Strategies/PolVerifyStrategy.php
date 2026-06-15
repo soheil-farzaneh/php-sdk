@@ -29,7 +29,7 @@ class PolVerifyStrategy extends AbstractPolStrategy
     protected function onSuccess(object $response): array
     {
         return [
-            'tracking_code' => $response->tracking_code ?? $this->invoice->getTrackingCode(),
+            'tracking_code' => $response->tracking_code ?? $this->invoice->tracking_code,
         ];
     }
 }

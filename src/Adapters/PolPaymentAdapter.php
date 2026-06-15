@@ -11,27 +11,28 @@ class PolPaymentAdapter implements PaymentGateway, TwoFactorGateway
 {
   
     public function __construct(
-        protected string $pin
+        protected string $pin,
+        public Invoice $invoice
     ) {
     }
 
-    public function requestPayment(Invoice $invoice): Response
+    public function authorize(): Response
     {
-        return $this->service($invoice)->authorize();
+        return $this->service()->authorize();
     }
 
-    public function requestOtp(Invoice $invoice) : Response
+    public function requestPayment() : Response
     {
-        return $this->service($invoice)->getOtp();
+        return $this->service()->getOtp();
     }
 
-    public function verifyPayment(Invoice $invoice, string $code) : Response 
+    public function verifyPayment(string $code) : Response 
     {
-        return $this->service($invoice)->verify($code);
+        return $this->service()->verify($code);
     }
 
-    private function service(Invoice $invoice) : PolService
+    private function service() : PolService
     {
-        return new PolService($this->pin, $invoice);
+        return new PolService($this->pin, $this->invoice);
     }
 }

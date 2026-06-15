@@ -2,19 +2,44 @@
 
 namespace Aqayepardakht\PhpSdk;
 
-class Invoice {
+class Invoice 
+{
     private array $data = [];
     private string $traceCode;
+    private float $amount;
+    private string $invoice_id = '';
+    private ?string $phone = null;
+    private ?string $email = null;
+    private ?string $description = null;
+    private string $callback;
+    private array $cards = [];
+    private ?string $name = null;
+    private ?string $national_code = null;
+    private ?string $method = null;
+    private bool $sms = false;
+    private ?string $tracking_code = null;
 
-    public function __construct(array $data) {
+    public function __construct(array $data) 
+    {
         foreach ($data as $key => $value) {
-            $this->$key = $value;
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+
+        if (!isset($this->amount)) {
+            throw new \InvalidArgumentException('amount الزامی است');
+        }
+
+        if (!isset($this->callback)) {
+            throw new \InvalidArgumentException('callback الزامی است');
         }
 
         $this->validate();
     }
 
-    public function getItems(): array {
+    public function getItems(): array 
+    {
         return [
             "amount"        => $this->amount,
             "invoice_id"    => $this->invoice_id,
@@ -31,7 +56,8 @@ class Invoice {
         ];
     }
 
-    public function validate(): void {
+    public function validate(): void 
+    {
         $this->validateAmount();
         if (isset($this->cards)) {
             $this->validateCards();
@@ -44,7 +70,8 @@ class Invoice {
         }
     }
 
-    private function validateAmount(): void {
+    private function validateAmount(): void 
+    {
         $amount = floatval(Helper::faToEnNumbers($this->amount));
 
         if ($amount <= 1000 || $amount >= 100000000) {
@@ -52,7 +79,8 @@ class Invoice {
         }
     }
 
-    private function validateCards(): void {
+    private function validateCards(): void 
+    {
         $cardNumbers = $this->cards ?? [];
 
         if (!is_array($cardNumbers)) {
@@ -64,19 +92,28 @@ class Invoice {
         }
     }
 
-    private function validateMobile(): void {
+    private function validateMobile(): void 
+    {
         Helper::validateMobileNumber($this->phone);
     }
 
-    private function validateEmail(): void {
+    private function validateEmail(): void 
+    {
         Helper::validateEmail($this->email);
     }
 
-    public function setTrackingCode(string $traceCode): void {
+    public function setTrackingCode(string $traceCode): void 
+    {
         $this->traceCode = $traceCode;
     }
 
-    public function getTrackingCode(): string {
+    public function getTrackingCode(): string 
+    {
         return $this->traceCode;
+    }
+     
+    public function getCallback(): string
+    {
+        return $this->callback;
     }
 }
