@@ -9,6 +9,7 @@ class Invoice
     private float $amount;
     private string $invoice_id = '';
     private ?string $phone = null;
+    private ?string $identifier = null;
     private ?string $email = null;
     private ?string $description = null;
     private string $callback;
@@ -47,6 +48,7 @@ class Invoice
             "email"         => $this->email,
             'description'   => $this->description,
             'callback'      => $this->callback,
+            'identifier'    => $this->identifier,
             'cards'         => $this->cards,
             'name'          => $this->name,
             'national_code' => $this->national_code,
