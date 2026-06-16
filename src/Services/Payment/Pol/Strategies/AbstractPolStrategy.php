@@ -37,7 +37,7 @@ abstract class AbstractPolStrategy implements PaymentStrategy
         $params         = array_merge($params, $this->extraParams());
 
         $response = (new Client())->post(Helper::getBaseUrl(
-            config::('apiHttpPol'), 
+            config('apiHttpPol'), 
             $this->endpointAction()), 
             $params
         );

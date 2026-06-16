@@ -36,7 +36,7 @@ class VerifyPaymentStrategy implements PaymentStrategy {
         ];
         
         $response = (new Client())->post(Helper::getBaseUrl(
-            config::('apiHttpAqp'), 
+            config('apiHttpAqp'), 
             'verify'), 
             $params
         );
