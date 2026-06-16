@@ -36,7 +36,12 @@ abstract class AbstractPolStrategy implements PaymentStrategy
         $params['pin']  = $this->pin;
         $params         = array_merge($params, $this->extraParams());
 
-        $response = (new Client())->post(Helper::getBaseUrl($this->endpointAction()), $params);
+        $response = (new Client())->post(Helper::getBaseUrl(
+            config::('apiHttpPol'), 
+            $this->endpointAction()), 
+            $params
+        );
+            
         $response = $response->json();
 
         if (!$response) {

@@ -33,7 +33,11 @@ class CreatePaymentStrategy implements PaymentStrategy {
         $params        = $this->invoice->getItems();
         $params["pin"] = $this->pin;
 
-        $response = (new Client())->post(Helper::getBaseUrl('pay'), $params);
+        $response = (new Client())->post(Helper::getBaseUrl(
+            config::('apiHttpAqp'),
+            'pay'), 
+            $params
+        );
 
         $response = $response->json();
 

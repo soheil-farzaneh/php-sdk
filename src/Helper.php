@@ -42,8 +42,8 @@ class Helper {
         return str_replace($fa_num, $en_num, $string);
     }
 
-    public static function getBaseUrl($route = null) {
-        $url = 'https://api.aqayepardakht.ir/v3/';
+    public static function getBaseUrl($url, $route = null) {
+        //$url = 'https://api.aqayepardakht.ir/v3/';
 
         if ($route) $url .= $route;
 

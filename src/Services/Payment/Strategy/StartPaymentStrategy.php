@@ -35,7 +35,7 @@ class StartPaymentStrategy implements PaymentStrategy {
     }
 
     public function getStartPayUrl() {
-        $url = str_replace('v3/', '' ,Helper::getBaseUrl());
+        $url = str_replace('v3/', '' ,Helper::getBaseUrl(config::('apiHttpAqp')));
 
         return $url . 'startpay/'.$this->traceCode;
     }
