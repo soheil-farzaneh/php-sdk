@@ -2,37 +2,36 @@
 
 namespace Aqayepardakht\PhpSdk\Adapters;
 
-use Aqayepardakht\PhpSdk\Contracts\{PaymentGateway, TwoFactorGateway};
+use Aqayepardakht\PhpSdk\Contracts\{PaymentGateway, AuthorizableGateway};
 use Aqayepardakht\PhpSdk\Services\Payment\Pol\PolService;
 use Aqayepardakht\PhpSdk\Invoice;
 use Aqayepardakht\PhpSdk\Response;
 
-class PolPaymentAdapter implements PaymentGateway, TwoFactorGateway
+class PolPaymentAdapter implements PaymentGateway, AuthorizableGateway
 {
   
     public function __construct(
         protected string $pin,
-        public Invoice $invoice
     ) {
     }
 
-    public function authorize(): Response
+    public function authorize(Invoice $invoice): Response
     {
-        return $this->service()->authorize();
+        return $this->service($invoice)->authorize();
     }
 
-    public function requestPayment() : Response
+    public function requestPayment(Invoice $invoice) : Response
     {
-        return $this->service()->getOtp();
+        return $this->service($invoice)->getOtp();
     }
 
-    public function verifyPayment(string $code) : Response 
+    public function verifyPayment(Invoice $invoice,string $code) : Response 
     {
-        return $this->service()->verify($code);
+        return $this->service($invoice)->verify($code);
     }
 
-    private function service() : PolService
+    private function service($invoice) : PolService
     {
-        return new PolService($this->pin, $this->invoice);
+        return new PolService($this->pin, $invoice);
     }
 }
