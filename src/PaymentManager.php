@@ -5,7 +5,7 @@ namespace Aqayepardakht\PhpSdk;
 use Aqayepardakht\PhpSdk\Adapters\PolPaymentAdapter;
 //use Aqayepardakht\PhpSdk\Adapters\AqpPaymentAdapter;
 
-class AqayepardakhtManager {
+class PaymentManager {
     
     public static function make(string $driver, string $pin) {
         switch ($driver) {
