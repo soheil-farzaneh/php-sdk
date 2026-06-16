@@ -9,6 +9,11 @@ class PolAuthorizeStrategy extends AbstractPolStrategy
         return 'authorize';
     }
 
+    protected function getPaymentUrl(): string
+    {
+        return config('paymentUrl.pol');
+    }
+
     protected function onSuccess(object $response): array
     {
         return [

@@ -18,6 +18,8 @@ abstract class AbstractPolStrategy implements PaymentStrategy
 
     abstract protected function endpointAction(): string;
 
+    abstract protected function getPaymentUrl(): string;
+
     protected function extraParams(): array
     {
         return [];
@@ -36,9 +38,9 @@ abstract class AbstractPolStrategy implements PaymentStrategy
         $params['pin']  = $this->pin;
         $params         = array_merge($params, $this->extraParams());
 
-
+        $url = $this->getPaymentUrl();
         $response = (new Client())->post(Helper::getBaseUrl(
-            "http://host.docker.internal:3191/api/", 
+            $url, 
             $this->endpointAction()), 
             $params
         );

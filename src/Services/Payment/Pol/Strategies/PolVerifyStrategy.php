@@ -19,6 +19,11 @@ class PolVerifyStrategy extends AbstractPolStrategy
         return 'verify';
     }
 
+    protected function getPaymentUrl(): string
+    {
+        return config('paymentUrl.pol');
+    }
+
     protected function extraParams(): array
     {
         return [
