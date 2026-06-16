@@ -3,7 +3,7 @@
 namespace Aqayepardakht\PhpSdk\Services\Payment\Pol\Strategies;
 
 use Aqayepardakht\Http\Client;
-use Aqayepardakht\PhpSdk\Contracts\PaymentStrategy;
+use Aqayepardakht\PhpSdk\Interfaces\PaymentStrategy;
 use Aqayepardakht\PhpSdk\Helper;
 use Aqayepardakht\PhpSdk\Invoice;
 use Aqayepardakht\PhpSdk\Response;
@@ -28,7 +28,7 @@ abstract class AbstractPolStrategy implements PaymentStrategy
         return (array) $response;
     }
 
-    public function process(): Response
+    public function process()
     {
         Helper::validateUrl($this->invoice->getCallback());
 
@@ -36,14 +36,15 @@ abstract class AbstractPolStrategy implements PaymentStrategy
         $params['pin']  = $this->pin;
         $params         = array_merge($params, $this->extraParams());
 
+
         $response = (new Client())->post(Helper::getBaseUrl(
-            config('apiHttpPol'), 
+            "http://host.docker.internal:3191/api/", 
             $this->endpointAction()), 
             $params
         );
-            
+        
         $response = $response->json();
-
+        
         if (!$response) {
             return Response::failure('مشکلی در اتصال به وجود آمد، لطفا دوباره تلاش کنید');
         }
