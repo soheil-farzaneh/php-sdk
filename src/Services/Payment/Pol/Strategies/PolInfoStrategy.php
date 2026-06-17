@@ -2,23 +2,22 @@
 
 namespace Aqayepardakht\PhpSdk\Services\Payment\Pol\Strategies;
 
-use Aqayepardakht\PhpSdk\Enums\EndPoints;
-class PolAuthorizeStrategy extends AbstractPolStrategy
+class PolInfoStrategy extends AbstractPolStrategy
 {
     protected function endpointAction(): string
     {
-        return 'authorize';
+        return 'info';
     }
 
     protected function getPaymentUrl(): string
     {
-        return EndPoints::POl_PRODUCTION;
+        return config('paymentUrl.Pol');
     }
 
     protected function onSuccess(object $response): array
     {
         return [
-            'redirecturi' => $response->redirecturi
+            'data' => $response->data ?? null,
         ];
     }
 }

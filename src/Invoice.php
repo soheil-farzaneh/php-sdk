@@ -5,7 +5,7 @@ namespace Aqayepardakht\PhpSdk;
 class Invoice 
 {
     private array $data = [];
-    private string $traceCode;
+    private string $traceCode = null;
     private float $amount;
     private string $invoice_id = '';
     private ?string $phone = null;

@@ -5,26 +5,26 @@ namespace Aqayepardakht\PhpSdk\Services\Payment\Pol;
 use Aqayepardakht\PhpSdk\Services\Payment\Pol\Strategies\{
     PolAuthorizeStrategy,
     PolOtpStrategy,
-    PolVerifyStrategy
+    PolVerifyStrategy,
+    PolInfoStrategy
 };
+use Aqayepardakht\PhpSdk\Enums\PolAction;
 use Aqayepardakht\PhpSdk\Interfaces\PaymentStrategy;
 
 class PolStrategyFactory
 {
-    public static function make(string $type, ...$params): PaymentStrategy
+    public static function make(string|PolAction $type, ...$params): PaymentStrategy
     {
-        switch ($type) {
-            case 'authorize':
-                [$pin, $invoice] = $params;
-                return new PolAuthorizeStrategy($pin, $invoice);
-            case 'otp':
-                [$pin, $invoice] = $params;
-                return new PolOtpStrategy($pin, $invoice);
-            case 'verify':
-                [$code, $pin, $invoice] = $params;
-                return new PolVerifyStrategy($code, $pin, $invoice);
-            default:
-                throw new \InvalidArgumentException("Invalid payment strategy type: $type");
+        if ($type instanceof PolAction) {
+            $type = $type->value;
         }
+
+        return match ($type) {
+            PolAction::AUTHORIZE->value => new PolAuthorizeStrategy(...$params),
+            PolAction::OTP->value       => new PolOtpStrategy(...$params),
+            PolAction::VERIFY->value    => new PolVerifyStrategy(...$params),
+            PolAction::INFO->value      => new PolInfoStrategy(...$params),
+            default => throw new \InvalidArgumentException("Invalid payment strategy type: $type"),
+        };
     }
 }

@@ -3,6 +3,7 @@
 namespace Aqayepardakht\PhpSdk\Services\Payment\Strategy;
 
 use Aqayepardakht\PhpSdk\Helper;
+use Aqayepardakht\PhpSdk\Enums\EndPoints;
 use Aqayepardakht\PhpSdk\Interfaces\PaymentStrategy;
 
 class StartPaymentStrategy implements PaymentStrategy {
@@ -35,7 +36,7 @@ class StartPaymentStrategy implements PaymentStrategy {
     }
 
     public function getStartPayUrl() {
-        $url = str_replace('v3/', '' ,Helper::getBaseUrl(config('paymentUrl.Aqp')));
+        $url = str_replace('v3/', '' ,Helper::getBaseUrl(EndPoints::AQP_PRODUCTION));
 
         return $url . 'startpay/'.$this->traceCode;
     }

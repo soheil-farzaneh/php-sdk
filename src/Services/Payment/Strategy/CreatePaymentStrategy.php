@@ -4,6 +4,7 @@ namespace Aqayepardakht\PhpSdk\Services\Payment\Strategy;
 
 use Aqayepardakht\PhpSdk\Interfaces\PaymentStrategy;
 use Aqayepardakht\Http\Client;
+use Aqayepardakht\PhpSdk\Enums\EndPoints;
 use Aqayepardakht\PhpSdk\Helper;
 use Aqayepardakht\PhpSdk\Invoice;
 
@@ -34,7 +35,7 @@ class CreatePaymentStrategy implements PaymentStrategy {
         $params["pin"] = $this->pin;
 
         $response = (new Client())->post(Helper::getBaseUrl(
-            config('paymentUrl.Aqp'),
+            EndPoints::AQP_PRODUCTION,
             'pay'), 
             $params
         );

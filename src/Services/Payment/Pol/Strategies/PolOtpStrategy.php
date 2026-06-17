@@ -11,7 +11,7 @@ class PolOtpStrategy extends AbstractPolStrategy
 
     protected function getPaymentUrl(): string
     {
-        return config('paymentUrl.pol');
+        return config('paymentUrl.Pol');
     }
 
     protected function onSuccess(object $response): array

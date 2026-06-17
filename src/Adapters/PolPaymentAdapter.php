@@ -2,12 +2,21 @@
 
 namespace Aqayepardakht\PhpSdk\Adapters;
 
-use Aqayepardakht\PhpSdk\Contracts\{PaymentGateway, AuthorizableGateway};
+use Aqayepardakht\PhpSdk\Contracts\{
+    PaymentGateway, 
+    AuthorizableGateway, 
+    PaymentInfoGateway
+};
+use Aqayepardakht\PhpSdk\DTOs\{
+    AuthorizeRequestDto,
+    RequestPaymentDto,
+    VerifyPaymentDto,
+    PaymentInfoDto
+};
 use Aqayepardakht\PhpSdk\Services\Payment\Pol\PolService;
-use Aqayepardakht\PhpSdk\Invoice;
 use Aqayepardakht\PhpSdk\Response;
 
-class PolPaymentAdapter implements PaymentGateway, AuthorizableGateway
+class PolPaymentAdapter implements PaymentGateway, AuthorizableGateway, PaymentInfoGateway
 {
   
     public function __construct(
@@ -15,23 +24,28 @@ class PolPaymentAdapter implements PaymentGateway, AuthorizableGateway
     ) {
     }
 
-    public function authorize(Invoice $invoice): Response
+    public function authorize(AuthorizeRequestDto $request): Response
     {
-        return $this->service($invoice)->authorize();
+        return $this->service()->authorize($request);
     }
 
-    public function requestPayment(Invoice $invoice) : Response
+    public function requestPayment(RequestPaymentDto $request) : Response
     {
-        return $this->service($invoice)->getOtp();
+        return $this->service()->getOtp($request);
     }
 
-    public function verifyPayment(Invoice $invoice,string $code) : Response 
+    public function verifyPayment(VerifyPaymentDto $request) : Response 
     {
-        return $this->service($invoice)->verify($code);
+        return $this->service()->verify($request);
     }
 
-    private function service($invoice) : PolService
+    public function paymentInfo(PaymentInfoDto $request) : Response 
     {
-        return new PolService($this->pin, $invoice);
+        return $this->service()->info($request);
+    }
+
+    private function service() : PolService
+    {
+        return new PolService($this->pin);
     }
 }

@@ -2,40 +2,52 @@
 
 namespace Aqayepardakht\PhpSdk\Services\Payment\Pol;
 
+use Aqayepardakht\PhpSdk\Enums\PolAction;
 use Aqayepardakht\PhpSdk\Interfaces\PaymentStrategy;
 use Aqayepardakht\PhpSdk\Services\Payment\Pol\PolStrategyFactory;
-use Aqayepardakht\PhpSdk\Invoice;
 use Aqayepardakht\PhpSdk\Response;
+use Aqayepardakht\PhpSdk\DTOs\{
+    AuthorizeRequestDto,
+    RequestPaymentDto,
+    VerifyPaymentDto,
+    PaymentInfoDto
+};
 
 class PolService {
 
     public function __construct(
-        private string $pin, 
-        public Invoice $invoice
+        private string $pin
     ) {
     }
 
-    public function authorize(): Response 
+    public function authorize(AuthorizeRequestDto $request): Response 
     {
         return $this->process(
-            PolStrategyFactory::make('authorize', $this->pin, $this->invoice)
+            PolStrategyFactory::make(PolAction::AUTHORIZE, $this->pin, $request)
         );
 
     }
 
-    public function getOtp(): Response 
+    public function getOtp(RequestPaymentDto $request): Response 
     {
         $response = $this->process(
-            PolStrategyFactory::make('otp', $this->pin, $this->invoice)
+            PolStrategyFactory::make(PolAction::OTP , $this->pin, $request)
         );
 
         return $response;
     }
 
-    public function verify(string $code): Response 
+    public function verify(VerifyPaymentDto $request): Response 
     {
         return $this->process(
-            PolStrategyFactory::make('verify', $code, $this->pin, $this->invoice)
+            PolStrategyFactory::make(PolAction::VERIFY, $this->pin, $request)
+        );
+    }
+
+    public function info(PaymentInfoDto $request): Response
+    {
+        return $this->process(
+            PolStrategyFactory::make(PolAction::INFO, $this->pin, $request)
         );
     }
 

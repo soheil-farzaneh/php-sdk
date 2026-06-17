@@ -5,25 +5,19 @@ namespace Aqayepardakht\PhpSdk\Services\Payment\Pol\Strategies;
 use Aqayepardakht\Http\Client;
 use Aqayepardakht\PhpSdk\Interfaces\PaymentStrategy;
 use Aqayepardakht\PhpSdk\Helper;
-use Aqayepardakht\PhpSdk\Invoice;
 use Aqayepardakht\PhpSdk\Response;
 
 abstract class AbstractPolStrategy implements PaymentStrategy
 {
     public function __construct(
         protected string $pin,
-        protected Invoice $invoice,
+        protected object $request,
     ) {
     }
 
     abstract protected function endpointAction(): string;
 
     abstract protected function getPaymentUrl(): string;
-
-    protected function extraParams(): array
-    {
-        return [];
-    }
 
     protected function onSuccess(object $response): array
     {
@@ -32,11 +26,15 @@ abstract class AbstractPolStrategy implements PaymentStrategy
 
     public function process()
     {
-        Helper::validateUrl($this->invoice->getCallback());
+        $this->request->validate();
 
-        $params         = $this->invoice->getItems();
-        $params['pin']  = $this->pin;
-        $params         = array_merge($params, $this->extraParams());
+        $params = array_merge(
+            $this->request->toArray(),
+            [
+                'pin' => $this->pin,
+            ]
+        );
+
 
         $url = $this->getPaymentUrl();
         $response = (new Client())->post(Helper::getBaseUrl(
