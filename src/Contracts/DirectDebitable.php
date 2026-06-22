@@ -2,7 +2,7 @@
 
 namespace Aqayepardakht\PhpSdk\Contracts;
 
-interface HasSubscription {
+interface DirectDebitable {
     public function createSubscription();
     public function cancelSubscription();
 }

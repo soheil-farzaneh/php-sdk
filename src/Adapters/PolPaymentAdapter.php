@@ -4,19 +4,22 @@ namespace Aqayepardakht\PhpSdk\Adapters;
 
 use Aqayepardakht\PhpSdk\Contracts\{
     PaymentGateway, 
-    AuthorizableGateway, 
-    PaymentInfoGateway
+    Authorizable, 
+    PaymentInquiry,
+    Refundable
 };
 use Aqayepardakht\PhpSdk\DTOs\{
     AuthorizeRequestDto,
     RequestPaymentDto,
     VerifyPaymentDto,
-    PaymentInfoDto
+    PaymentInfoDto,
+    RequestRefundDto,
+    InquiryRefundDto
 };
 use Aqayepardakht\PhpSdk\Services\Payment\Pol\PolService;
 use Aqayepardakht\PhpSdk\Response;
 
-class PolPaymentAdapter implements PaymentGateway, AuthorizableGateway, PaymentInfoGateway
+class PolPaymentAdapter implements PaymentGateway, Authorizable, PaymentInquiry, Refundable
 {
   
     public function __construct(
@@ -39,9 +42,19 @@ class PolPaymentAdapter implements PaymentGateway, AuthorizableGateway, PaymentI
         return $this->service()->verify($request);
     }
 
-    public function paymentInfo(PaymentInfoDto $request) : Response 
+    public function paymentInquiry(PaymentInfoDto $request) : Response 
     {
         return $this->service()->info($request);
+    }
+
+    public function requestRefund(RequestRefundDto $request) : Response
+    {
+        return $this->service()->requestRefund($request);
+    }
+    
+    public function inquiryRefund(InquiryRefundDto $request) : Response
+    {
+        return $this->service()->inquiryRefund($request);
     }
 
     private function service() : PolService

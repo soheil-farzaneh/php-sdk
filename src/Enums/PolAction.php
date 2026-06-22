@@ -8,4 +8,6 @@ enum PolAction: string
     case OTP = 'otp';
     case VERIFY = 'verify';
     case INFO = 'info';
+    case REQUESTREFUND = 'request_refund';
+    case INQUIRYREFUND = 'inquiry_refund';
 }

@@ -10,7 +10,9 @@ use Aqayepardakht\PhpSdk\DTOs\{
     AuthorizeRequestDto,
     RequestPaymentDto,
     VerifyPaymentDto,
-    PaymentInfoDto
+    PaymentInfoDto,
+    InquiryRefundDto,
+    RequestRefundDto,
 };
 
 class PolService {
@@ -48,6 +50,20 @@ class PolService {
     {
         return $this->process(
             PolStrategyFactory::make(PolAction::INFO, $this->pin, $request)
+        );
+    }
+
+    public function requestRefund(RequestRefundDto $request): Response
+    {
+        return $this->process(
+            PolStrategyFactory::make(PolAction::REQUESTREFUND, $this->pin, $request)
+        );
+    }
+
+    public function inquiryRefund(InquiryRefundDto $request): Response
+    {
+        return $this->process(
+            PolStrategyFactory::make(PolAction::INQUIRYREFUND, $this->pin, $request)
         );
     }
 
