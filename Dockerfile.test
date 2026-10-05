@@ -1,0 +1,22 @@
+FROM php:8.3-cli
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        git \
+        unzip \
+        ca-certificates \
+        libxml2-dev \
+        libonig-dev \
+        libcurl4-openssl-dev \
+    && for sdk_extension in curl dom mbstring xml xmlwriter; do \
+        if ! php -r "exit(extension_loaded('$sdk_extension') ? 0 : 1);"; then \
+            docker-php-ext-install -j"$(nproc)" "$sdk_extension"; \
+        fi; \
+    done \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+ENV COMPOSER_HOME=/tmp/composer
+
+WORKDIR /app

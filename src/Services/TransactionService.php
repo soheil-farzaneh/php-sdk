@@ -1,64 +1,45 @@
-<?php 
-
+<?php
 namespace Aqayepardakht\PhpSdk\Services;
 
-use Aqayepardakht\Http\Response;
-use Aqayepardakht\Http\Client;
-use Aqayepardakht\PhpSdk\Helper;
-use Aqayepardakht\PhpSdk\Invoice;
-use Aqayepardakht\PhpSdk\Services\Pay\PaymentService;
+use Aqayepardakht\PhpSdk\Contracts\HttpClient;
+use Aqayepardakht\PhpSdk\Infrastructure\Http\CurlHttpClient;
 
-class TransactionService {
-    /**
-     * gateway pin
-     *
-     * @var string
-    */
-    protected $pin;
+class TransactionService
+{
+    protected $page = null;
+    protected $start = null;
+    protected $end = null;
+    private HttpClient $http;
 
-    protected $account;
-    protected $code;
-    protected $page;
-    protected $start;
-    protected $end;
-
-    public function __construct($account, $code, $pin = null) {
-        $this->pin     = $pin;
-        $this->account = $account;
-        $this->code    = $code;
+    public function __construct(protected $account, protected $code, protected $pin = null, ?HttpClient $http = null)
+    {
+        $this->http = $http ?? new CurlHttpClient();
     }
 
-    public function get() {
-        $url = 'https://panel.aqayepardakht.ir/api/v2/transactions/';
-        
-        if ($this->pin) $url .='gate';
-        else            $url .='account';
-
-        $response = (new Client())->post($url, [
-            'accout'    => $this->account,
-            'code'       => $this->code,
-            'page'       => $this->page,
+    public function get(): object
+    {
+        if ($this->account === null || $this->account === '' || $this->code === null || $this->code === '') {
+            throw new \InvalidArgumentException('Transaction queries require account and code credentials.');
+        }
+        $response = $this->http->post('https://panel.aqayepardakht.ir/api/v2/transactions/'.($this->pin ? 'gate' : 'account'), [
+            // Preserve the legacy wire spelling until the API contract is confirmed.
+            'accout' => $this->account,
+            'code' => $this->code,
+            'page' => $this->page,
             'start_date' => $this->start,
-            'end_date'   => $this->end, 
-            'pin'        => $this->pin ? $this->pin : null 
+            'end_date' => $this->end,
+            'pin' => $this->pin ?: null,
         ]);
-
-        $response = $response->json();
-
-        if ($response->status == 'error') throw new \Exception($response->status, $response->code);
-     
+        if (!isset($response->status)) {
+            throw new \Aqayepardakht\PhpSdk\Exceptions\TransportException('The API response is missing its status.');
+        }
+        if ($response->status === 'error') {
+            throw new \RuntimeException((string) ($response->message ?? $response->status), is_numeric($response->code ?? null) ? (int) $response->code : 0);
+        }
         return $response;
     }
 
-    public function startDate($date) {
-        $this->start = $date;
-    }
-
-    public function endDate($date) {
-        $this->end = $date;
-    }
-
-    public function page($page) {
-        $this->page = $page;
-    }
+    public function startDate($date): self { $this->start = $date; return $this; }
+    public function endDate($date): self { $this->end = $date; return $this; }
+    public function page($page): self { $this->page = $page; return $this; }
 }

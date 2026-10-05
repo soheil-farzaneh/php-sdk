@@ -1,25 +1,14 @@
-<?php 
+<?php
+namespace Aqayepardakht\PhpSdk\Services;
 
-namespace Aqayepardakht\PhpSdk\Services\Account;
+use Aqayepardakht\PhpSdk\Contracts\HttpClient;
 
-use Aqayepardakht\Http\Response;
-use Aqayepardakht\Http\Client;
-use Aqayepardakht\PhpSdk\Helper;
-use Aqayepardakht\PhpSdk\Invoice;
-use Aqayepardakht\PhpSdk\Services\Pay\PaymentService;
-use Aqayepardakht\PhpSdk\Services\Transaction\TransactionService;
-use Aqayepardakht\PhpSdk\Services\Gateway\GatewayService;
+class AccountService
+{
+    public function __construct(protected $account, protected $code, private ?HttpClient $http = null) {}
 
-class AccountService {
-    protected $account; 
-    protected $code;
-
-    public function __construct($account, $code) {
-        $this->account = $account;
-        $this->code    = $code;
-    }
-
-    public function transactions($pin = null) {
-        return (new TransactionService($this->account, $this->code, $pin));
+    public function transactions($pin = null): TransactionService
+    {
+        return new TransactionService($this->account, $this->code, $pin, $this->http);
     }
 }

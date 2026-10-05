@@ -6,8 +6,22 @@
         }
     },
     "require": {
-        "aqayepardakht/http": "^2.0"
+        "php": "^8.2",
+        "ext-curl": "*",
+        "ext-json": "*"
     },
-    "minimum-stability": "dev"
+    "description": "Framework-independent payment SDK for Aqayepardakht and POLPay",
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aqayepardakht\\PhpSdk\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite unit",
+        "test:integration": "phpunit --testsuite integration"
+    }
 }
- 
